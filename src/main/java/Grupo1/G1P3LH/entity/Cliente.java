@@ -19,18 +19,6 @@ public class Cliente {
 	
 	
 	
-	
-	public Cliente() {
-		super();
-	}
-	public Cliente(Long id_cliente, int dni, String apellido, String nombre, String correo) {
-		super();
-		this.id_cliente = id_cliente;
-		this.dni = dni;
-		this.apellido = apellido;
-		this.nombre = nombre;
-		this.correo = correo;
-	}
 	public Long getId_cliente() {
 		return id_cliente;
 	}
