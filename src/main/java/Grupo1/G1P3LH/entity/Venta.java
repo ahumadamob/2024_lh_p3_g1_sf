@@ -1,14 +1,21 @@
 package Grupo1.G1P3LH.entity;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 @Entity
 public class Venta {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id_venta;
 	private String carrito_id;
+	
+	@ManyToMany
+	private List<Producto> productos;
+	
 	public Long getId_venta() {
 		return Id_venta;
 	}
