@@ -1,9 +1,12 @@
 package Grupo1.G1P3LH.entity;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -20,11 +23,18 @@ public class Cliente {
 	@OneToOne
 	private Domicilio domicilio;
 	
+	@OneToMany(mappedBy = "cliente")
+	private List<Venta> ventas;
 	
 	
+	
+	public List<Venta> getVentas() {
+		return ventas;
 	public Domicilio getDomicilio() {
 		return domicilio;
 	}
+	public void setVentas(List<Venta> ventas) {
+		this.ventas = ventas;
 	public void setDomicilio(Domicilio domicilio) {
 		this.domicilio = domicilio;
 	}
