@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Cliente {
@@ -19,6 +20,8 @@ public class Cliente {
 	private String apellido;
 	private String nombre;
 	private String correo;
+	@OneToOne
+	private Domicilio domicilio;
 	
 	@OneToMany(mappedBy = "cliente")
 	private List<Venta> ventas;
@@ -27,9 +30,13 @@ public class Cliente {
 	
 	public List<Venta> getVentas() {
 		return ventas;
+	public Domicilio getDomicilio() {
+		return domicilio;
 	}
 	public void setVentas(List<Venta> ventas) {
 		this.ventas = ventas;
+	public void setDomicilio(Domicilio domicilio) {
+		this.domicilio = domicilio;
 	}
 	public Long getId_cliente() {
 		return id_cliente;
