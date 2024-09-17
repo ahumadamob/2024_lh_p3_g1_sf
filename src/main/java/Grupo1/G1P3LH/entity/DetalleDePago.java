@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class DetalleDePago {
@@ -11,7 +13,10 @@ public class DetalleDePago {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String venta;
+	
+	@ManyToOne
+	@JoinColumn(name = "venta_id")
+	private Venta venta;
 	private String metodoDePago;
 
 	public Long getId() {
@@ -22,20 +27,20 @@ public class DetalleDePago {
 		this.id = id;
 	}
 
-	public String getVenta() {
-		return venta;
-	}
-
-	public void setVenta(String venta) {
-		this.venta = venta;
-	}
-
 	public String getMetodoDePago() {
 		return metodoDePago;
 	}
 
 	public void setMetodoDePago(String metodoDePago) {
 		this.metodoDePago = metodoDePago;
+	}
+
+	public Venta getVenta() {
+		return venta;
+	}
+
+	public void setVenta(Venta venta) {
+		this.venta = venta;
 	}
 
 }
