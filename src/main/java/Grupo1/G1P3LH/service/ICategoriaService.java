@@ -10,4 +10,5 @@ public interface ICategoriaService {
 	public Categoria guardar(Categoria producto);
 	public void eliminar(Long id);
 	public boolean existe(Long id);
+	public int contarCategoriasActivas();
 }
