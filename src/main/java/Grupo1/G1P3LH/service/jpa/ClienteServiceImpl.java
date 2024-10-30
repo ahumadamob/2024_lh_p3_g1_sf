@@ -45,4 +45,9 @@ public class ClienteServiceImpl implements IClienteService {
 		}
 	}
 
+	@Override
+	public List<Cliente> obtenerClientesVIP() {
+		return repo.findByEsVipTrue();
+	}
+
 }
