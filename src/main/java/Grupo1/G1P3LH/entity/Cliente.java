@@ -8,6 +8,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Cliente {
@@ -15,13 +18,26 @@ public class Cliente {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id_cliente;
-
+	@NotNull(message = "El DNI es obligatorio")
 	private int dni;
+	@NotBlank(message = "Apellido no puede ir vacio")
 	private String apellido;
+	@NotBlank(message = "Nombre es obligatorio")
 	private String nombre;
+	@Email(message = "se debe ingresar un correo")
 	private String correo;
 	@OneToOne
 	private Domicilio domicilio;
+	@NotNull(message = "el campo vip no debe ir vacio")
+	private Boolean esVip;
+
+	public Boolean getEsVip() {
+		return esVip;
+	}
+
+	public void setEsVip(Boolean esVip) {
+		this.esVip = esVip;
+	}
 
 	@OneToMany(mappedBy = "cliente")
 	private List<Venta> ventas;
