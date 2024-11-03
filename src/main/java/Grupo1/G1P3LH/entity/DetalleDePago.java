@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class DetalleDePago {
@@ -17,7 +19,11 @@ public class DetalleDePago {
 	@ManyToOne
 	@JoinColumn(name = "venta_id")
 	private Venta venta;
+	@NotBlank (message = "Metodo de pago obligatorio")
 	private String metodoDePago;
+	@NotBlank(message = "Estado de pago obligatorio")
+	private String estadoPago;
+
 
 	public Long getId() {
 		return id;
@@ -37,6 +43,14 @@ public class DetalleDePago {
 
 	public Venta getVenta() {
 		return venta;
+	}
+
+	public String getEstadoPago() {
+		return estadoPago;
+	}
+
+	public void setEstadoPago(String estadoPago) {
+		this.estadoPago = estadoPago;
 	}
 
 	public void setVenta(Venta venta) {
