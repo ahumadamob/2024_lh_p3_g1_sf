@@ -1,6 +1,7 @@
 package Grupo1.G1P3LH.service.jpa;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,13 @@ public class DetalleDePagoServiceImpl implements IDetalleDePagoService {
 
 	@Override
 	public DetalleDePago mostrarPorId(Long id) {
+		Optional<DetalleDePago> optional = repo.findById(id);
+		if(optional.isPresent()) {
+			return optional.get();
+		}else {
+			return null;	
+		}
 		
-		return repo.findById(id).orElse(null);
 	}
 
 	@Override
@@ -47,5 +53,10 @@ public class DetalleDePagoServiceImpl implements IDetalleDePagoService {
 		}
 		
 	}
+	@Override
+	public List<DetalleDePago> obtenerPagosPendientes() {
+	    return repo.findByEstadoPago("pendiente");
+	}
+
 
 }
