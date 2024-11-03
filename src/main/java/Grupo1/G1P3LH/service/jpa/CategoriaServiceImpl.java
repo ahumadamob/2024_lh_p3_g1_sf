@@ -50,5 +50,21 @@ public class CategoriaServiceImpl implements ICategoriaService {
 		
 	}
 
-	
+	@Override
+	public int contarCategoriasActivas() {
+		List<Categoria> categorias = repo.findAll();  // Obtener todas las categorías
+		int contador = 0;
+
+		// Sumar las categorías que están activas
+		for (Categoria categoria : categorias) {
+			if ("activo".equals(categoria.getEstado())) {  // Verificar si la categoría está activa
+				contador++;
+			}
+		}
+
+		return contador;  // Retornar el total de categorías activas
+	}
+
+
+
 }
