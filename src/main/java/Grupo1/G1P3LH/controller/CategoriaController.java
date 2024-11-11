@@ -44,19 +44,12 @@ public class CategoriaController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
 		}
 	}
-
-	//nuevo endpoint solicitado
+	//endpoint sugerido
 	@GetMapping("/categorias/activas/count")
 	public ResponseEntity<DTOResponse<Integer>> contarCategoriasActivas() {
-		int totalActivas = servi.contarCategoriasActivas();
-
-		if (totalActivas > 0) {
-			DTOResponse<Integer> responseDto = new DTOResponse<>(200, "", totalActivas);
-			return ResponseEntity.ok().body(responseDto);
-		} else {
-			DTOResponse<Integer> responseDto = new DTOResponse<>(204, "No hay categorías activas.", null);
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(responseDto);
-		}
+		int cantidadActivas = servi.contarCategoriasActivas();
+		DTOResponse<Integer> responseDto = new DTOResponse<>(200, "Conteo de categorías activas", cantidadActivas);
+		return ResponseEntity.ok().body(responseDto);
 	}
 
 	@PostMapping("/categorias")

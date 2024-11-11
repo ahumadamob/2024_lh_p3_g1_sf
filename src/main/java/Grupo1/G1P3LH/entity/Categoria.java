@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -18,8 +19,11 @@ public class Categoria {
 	private Long id;
 
 	@NotNull(message = "nombre obligatorio")
+	@NotBlank(message = "nombre no puede estar vacio")
 	private String nombre;
 
+	@NotNull(message = "estado obligatorio")
+	@NotBlank(message = "estado no puede estar vacio")
 	private String estado;
 
 	@OneToMany(mappedBy = "categoria")
