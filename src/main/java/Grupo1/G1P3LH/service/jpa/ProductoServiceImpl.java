@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import Grupo1.G1P3LH.entity.Producto;
 import Grupo1.G1P3LH.repository.ProductoRepository;
+import Grupo1.G1P3LH.service.ICategoriaService;
 import Grupo1.G1P3LH.service.IProductoService;
 
 @Service
@@ -14,7 +15,10 @@ public class ProductoServiceImpl implements IProductoService {
 
 	@Autowired
 	private ProductoRepository repo;
-
+	
+	@Autowired
+	private ICategoriaService serviCategoria;
+	
 	@Override
 	public List<Producto> mostrarTodos() {
 		return repo.findAll();
@@ -43,5 +47,16 @@ public class ProductoServiceImpl implements IProductoService {
 			return repo.existsById(id);
 		}
 	}
+
+	@Override
+	public List<Producto> mostrarPorCategoria(Long id_Categoria) {
+		return repo.findByCategoria_Id(id_Categoria);
+	}
+	
+	@Override
+	public boolean existeCategoria(Long id) {
+		return serviCategoria.existe(id);
+	}
+	
 
 }
