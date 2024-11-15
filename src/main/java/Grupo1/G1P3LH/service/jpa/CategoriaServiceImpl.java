@@ -50,5 +50,11 @@ public class CategoriaServiceImpl implements ICategoriaService {
 		
 	}
 
-	
+	@Override
+	public int contarCategoriasActivas() {
+		return repo.countByEstado("activo");
+	}
+
+
+
 }
