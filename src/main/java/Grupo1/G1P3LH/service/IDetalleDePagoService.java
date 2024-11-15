@@ -10,5 +10,6 @@ public interface IDetalleDePagoService {
 	public DetalleDePago guardar(DetalleDePago detalle);
 	public void eliminar(Long id);
 	public boolean existe(Long id);
+	public List<DetalleDePago>obtenerPagosPendientes(); 
 
 }
