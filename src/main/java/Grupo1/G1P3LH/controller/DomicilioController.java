@@ -1,79 +1,84 @@
 package Grupo1.G1P3LH.controller;
 
 import Grupo1.G1P3LH.entity.Domicilio;
+import Grupo1.G1P3LH.util.DTOResponse;
+import Grupo1.G1P3LH.util.ResourceNotFoundException;
 import Grupo1.G1P3LH.service.IDomicilioService;
-import Grupo1.G1P3LH.util.ApiResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 public class DomicilioController {
-    @Autowired
-    private IDomicilioService dService;
 
-    //alta de domicilio
-    @PostMapping("/domicilio")
-    ApiResponse<Domicilio> guardarDomicilio(@RequestBody Domicilio domicilio){
-        ApiResponse<Domicilio> response = new ApiResponse<>();
-        if (dService.exist(domicilio.getId())){
-            response.setError("ERROR este id ya existe");
-        }else{
-            response.setData(dService.saveDomicilio(domicilio));
-        }
-        return response;
-    }
+	@Autowired
+	private IDomicilioService dService;
 
-    //actualizacion de domicilio
-    @PutMapping("/domicilio")
-    ApiResponse<Domicilio> actualizarDomicilio(@RequestBody Domicilio domicilio){
-        ApiResponse<Domicilio> response = new ApiResponse<>();
-        if (dService.exist(domicilio.getId())){
-            response.setData(dService.saveDomicilio(domicilio));
-        }else{
-            response.setError("ERROR datos no encontrados");
-        }
-        return response;
-    }
+	// Alta de domicilio
+	@PostMapping("/domicilio")
+	public ResponseEntity<DTOResponse<Domicilio>> crearDomicilio(@RequestBody Domicilio domicilio) {
+		if (dService.exists(domicilio.getId())) {
+			throw new ResourceNotFoundException("El ID ya existe: " + domicilio.getId());
+		} else {
+			Domicilio savedDomicilio = dService.saveDomicilio(domicilio);
+			DTOResponse<Domicilio> dtoResponse = new DTOResponse<>(200, "", savedDomicilio);
+			return ResponseEntity.ok(dtoResponse);
+		}
+	}
 
-    //lectura de todos los domicilio
-    @GetMapping("/domicilios")
-    ApiResponse<List<Domicilio>> traerTodosLosDomicilios() {
-        ApiResponse<List<Domicilio>> response = new ApiResponse<>();
-        List<Domicilio> lista = dService.getAllDomicilio();
+	// Actualización de domicilio
+	@PutMapping("/domicilio")
+	public ResponseEntity<DTOResponse<Domicilio>> actualizarDomicilio(@RequestBody Domicilio domicilio) {
+		if (!dService.exists(domicilio.getId())) {
+			throw new ResourceNotFoundException("El ID no existe: " + domicilio.getId());
+		} else {
+			Domicilio updatedDomicilio = dService.saveDomicilio(domicilio);
+			DTOResponse<Domicilio> dto = new DTOResponse<>(200, "", updatedDomicilio);
+			return ResponseEntity.ok(dto);
+		}
+	}
 
-        if (lista.isEmpty()) {
-            response.setError("ERROR Datos no encontrados");
-        } else {
-            response.setData(lista);
-        }
-        return response;
-    }
-    //lectura de domicilio especifico
-    @GetMapping("/domicilio/{id}")
-    ApiResponse<Domicilio> traerDomicilioPorId(@PathVariable Long id){
-        ApiResponse<Domicilio> response = new ApiResponse<>();
-        Domicilio domicilio = dService.getDomicilio(id);
+	// Lectura de todos los domicilios
+	@GetMapping("/domicilios")
+	public ResponseEntity<DTOResponse<List<Domicilio>>> buscarDomicilios() {
+		List<Domicilio> listadoDomicilio = dService.getAllDomicilio();
+		DTOResponse<List<Domicilio>> dtoResponse = new DTOResponse<>(200, "", listadoDomicilio);
+		return ResponseEntity.ok(dtoResponse);
+	}
 
-        if (domicilio == null){
-            response.setError("ERROR no existe el ID solicitado " + id.toString());
-        }else{
-            response.setData(domicilio);
-        }
-        return response;
-    }
+	// Obtener domicilio por ID
+	@GetMapping("/domicilio/{id}")
+	public ResponseEntity<DTOResponse<Domicilio>> buscarDomicilioPorId(@PathVariable("id") Long id) {
+		if (!dService.exists(id)) {
+			throw new ResourceNotFoundException("No existe este domicilio con ID: " + id);
+		}
+		Domicilio domicilio = dService.obtenerPorId(id);
+		DTOResponse<Domicilio> dto = new DTOResponse<>(200, "", domicilio);
+		return ResponseEntity.ok(dto);
+	}
 
+	@DeleteMapping("/domicilio/{id}")
+	public ResponseEntity<DTOResponse<?>> eliminarDomicilio(@PathVariable("id") Long id) {
+		if (!dService.exists(id)) {
+			throw new ResourceNotFoundException("El domicilio con ID " + id + " no existe.");
+		}
+		dService.deleteDomicilio(id);
+		DTOResponse<?> dtoSi = new DTOResponse<>(200, "El domicilio se eliminó con éxito", null);
+		return ResponseEntity.ok(dtoSi);
+	}
 
-    //eliminacion de domicilio especifico
-    @DeleteMapping("/domicilio/{id}")
-    String eliminarDomicilio(@PathVariable Long id){
-        if (dService.exist(id)){
-            dService.deleteDomicilio(id);
-            return "Elemento eliminado correctamente";
-        }else{
-            return "ERROR el id solicitado no existe";
-        }
+	@GetMapping("/domicilios/porCiudad/{ciudad}")
+	public ResponseEntity<DTOResponse<List<Domicilio>>> buscarDomiciliosPorCiudad(@PathVariable("ciudad") Long ciudad) {
+		if (!dService.ciudadExists(ciudad)) {
+			throw new ResourceNotFoundException("No existe la ciudad proporcionada: " + ciudad);
+		} else{
+			List<Domicilio> listadoDomicilio = dService.obtenerDomiciliosPorCiudad(ciudad);
+			DTOResponse<List<Domicilio>> dtoResponse = new DTOResponse<>(200, "", listadoDomicilio);
+			return ResponseEntity.ok(dtoResponse);
+		}
 
-    }
+	}
 }

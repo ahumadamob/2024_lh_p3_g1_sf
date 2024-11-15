@@ -9,5 +9,8 @@ public interface IDomicilioService {
     public void deleteDomicilio (Long id);
     public List<Domicilio> getAllDomicilio();
     public Domicilio getDomicilio(Long id);
-    public boolean exist(Long id);
+    public boolean exists(Long id);
+    public Domicilio obtenerPorId(Long id);
+    public List<Domicilio> obtenerDomiciliosPorCiudad(long ciudad);
+    public boolean ciudadExists(Long id);
 }

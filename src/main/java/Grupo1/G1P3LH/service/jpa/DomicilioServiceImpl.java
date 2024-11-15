@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class DomicilioService implements IDomicilioService {
+public class DomicilioServiceImpl implements IDomicilioService {
+	
     @Autowired
     private IDomicilioRepository dRepo;
 
@@ -35,7 +37,7 @@ public class DomicilioService implements IDomicilioService {
     }
 
     @Override
-    public boolean exist(Long id) {
+    public boolean exists(Long id) {
         if(id==null){
             return false;
         }else{
@@ -43,4 +45,21 @@ public class DomicilioService implements IDomicilioService {
         }
     }
 
+    @Override
+    public Domicilio obtenerPorId(Long id) {
+        Optional<Domicilio> optional = dRepo.findById(id);
+        return optional.orElse(null);
+    }
+
+    @Override
+    public List<Domicilio> obtenerDomiciliosPorCiudad(long ciudad) {
+        return dRepo.findDomicilioByCodigoPostal(ciudad);
+    }
+    public boolean ciudadExists(Long ciudad) {
+        if(ciudad==null){
+            return false;
+        }else{
+            return dRepo.existsByCodigoPostal(ciudad);
+        }
+    }
 }
