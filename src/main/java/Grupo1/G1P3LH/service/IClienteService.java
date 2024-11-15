@@ -5,15 +5,17 @@ import java.util.List;
 import Grupo1.G1P3LH.entity.Cliente;
 
 public interface IClienteService {
-	
-		public List<Cliente> mostrarTodos();
 
-		public Cliente mostrarPorId(Long id);
+	public List<Cliente> mostrarTodos();
 
-		public Cliente guardar(Cliente cliente);
+	public Cliente mostrarPorId(Long id);
 
-		public void eliminar(Long id);
+	public Cliente guardar(Cliente cliente);
 
-		public boolean existe(Long id);
+	public void eliminar(Long id);
 
-	}
+	public boolean existe(Long id);
+
+	List<Cliente> obtenerClientesVIP();
+
+}

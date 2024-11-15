@@ -1,9 +1,14 @@
 package Grupo1.G1P3LH.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import Grupo1.G1P3LH.entity.Producto;
 import Grupo1.G1P3LH.service.IProductoService;
-import Grupo1.G1P3LH.util.ApiResponse;
+import Grupo1.G1P3LH.util.DTOResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+
 
 @RestController
 public class ProductoController {
@@ -21,60 +29,104 @@ public class ProductoController {
 	IProductoService service;
 
 	@GetMapping("/productos")
-	ApiResponse<List<Producto>> mostrarTodosLosProductos() {
-		ApiResponse<List<Producto>> response = new ApiResponse<>();
-		List<Producto> lista = service.mostrarTodos();
-		if (lista.isEmpty()) {
-			response.setError("No existen productos");
-		} else {
-			response.setData(lista);
+	public ResponseEntity <DTOResponse<List<Producto>>> mostrarTodosLosProductos() {
+		
+		List<Producto> listaProducto = service.mostrarTodos();
+		if (listaProducto == null) {
+			
+			DTOResponse<List <Producto>> dto = new DTOResponse<>(404,
+					"no se han cargado productos",null);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
+		}else {
+			DTOResponse<List <Producto>> dto = new DTOResponse<>(200,
+					"Lista actualizada",service.mostrarTodos());
+			return ResponseEntity.ok().body(dto);
 		}
-		return response;
 	}
 
 	@GetMapping("/productos/{id}")
-	ApiResponse<Producto> mostrarProductosPorId(@PathVariable("id") Long id) {
-		ApiResponse<Producto> response = new ApiResponse<>();
-		Producto producto = service.mostrarPorId(id);
-		if (producto == null) {
-			response.setError("No existe este ID " + id.toString());
+	public ResponseEntity <DTOResponse<Producto>> mostrarProductosPorId(@PathVariable("id") Long id) {
+		
+		if (service.existe(id)) {
+			//Existe
+			DTOResponse<Producto> dto = new DTOResponse<>(200,
+					"Producto encontrado",service.mostrarPorId(id));
+			return ResponseEntity.ok().body(dto);
 		} else {
-			response.setData(producto);
+			//no Existe
+			DTOResponse<Producto> dto = new DTOResponse<>(404,
+					"El producto con el id: "+id+",no esta registrado",
+					null);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
 		}
-		return response;
 	}
 
 	@PostMapping("/productos")
-	ApiResponse<Producto> crearRegistro(@RequestBody Producto producto) {
-		ApiResponse<Producto> response = new ApiResponse<>();
+	public ResponseEntity <DTOResponse<Producto>> crearProducto(@RequestBody Producto producto) {
+		
 		if (service.existe(producto.getId())) {
-			response.setError("Ya existe este producto");
+			//Existe el Producto
+			DTOResponse<Producto> dto = new DTOResponse<>(404,
+					"El Producto con el id: "+producto.getId().toString()+", ya esta creado",
+					null);	
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
 		} else {
-			Producto productoGuardado = service.guardar(producto);
-			response.setData(productoGuardado);
+			//no Existe el producto
+			DTOResponse<Producto> dto = new DTOResponse<>(200,
+					"Producto creado",service.guardar(producto));
+			return ResponseEntity.ok().body(dto);
 		}
-		return response;
 	}
 
 	@PutMapping("/productos")
-	ApiResponse<Producto> actualizarProducto(@RequestBody Producto producto) {
-		ApiResponse<Producto> response = new ApiResponse<>();
+	public ResponseEntity <DTOResponse<Producto>> actualizarProducto(@RequestBody Producto producto) {
+		
 		if (service.existe(producto.getId())) {
-			Producto productoGuardado = service.guardar(producto);
-			response.setData(productoGuardado);
+			DTOResponse<Producto> dto = new DTOResponse<>(200,
+					"Producto actualizado",service.guardar(producto));
+			return ResponseEntity.ok().body(dto);
 		} else {
-			response.setError("El producto no existe");
+			DTOResponse<Producto> dto = new DTOResponse<>(404,
+					"El id "+ producto.getId().toString()+ ", No existe",null);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
 		}
-		return response;
 	}
 
 	@DeleteMapping("/productos/{id}")
-	String eliminarProducto(@PathVariable("id") Long id) {
+	public ResponseEntity <DTOResponse<?>> eliminarProducto(@PathVariable("id") Long id) {
 		if (service.existe(id)) {
 			service.eliminar(id);
-			return "El producto se eliminó con exito";
+			DTOResponse<Producto> dto = new DTOResponse<>(200,
+					"Producto con id: "+id+" eliminado",null);
+			return ResponseEntity.ok().body(dto);
 		} else {
-			return "No existe el ID " + id.toString();
+			DTOResponse<Producto> dto = new DTOResponse<>(404,
+					"El producto con el id: "+ id.toString()+ ", No existe",null);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
 		}
+	}
+	
+	@GetMapping("/productos/categoria/{id}")
+	public ResponseEntity<DTOResponse<?>> mostrarPorCategoria(@PathVariable("id") Long id){
+	    if (service.existeCategoria(id)) {
+	    	DTOResponse<List<Producto>> dto = new DTOResponse<>(200,
+	    			"Lista de producto por id: "+id,service.mostrarPorCategoria(id));
+	        return ResponseEntity.ok().body(dto);
+	    } else {
+	    	DTOResponse<List<Producto>> dto = new DTOResponse<>(404,
+	    			"No se encontro la categoria con el id: "+id,null);
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
+	    }
+	}
+
+	
+	@ExceptionHandler(ConstraintViolationException.class)
+	ResponseEntity <DTOResponse<Producto>> controladorDeExcepciones(ConstraintViolationException e){
+		List<String> errors = new ArrayList<>();
+		for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+            errors.add(violation.getMessage());
+        }
+		DTOResponse<Producto> response = new DTOResponse<>(404, errors,null);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 	}
 }

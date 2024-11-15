@@ -14,5 +14,9 @@ public interface IProductoService {
 	public void eliminar(Long id);
 
 	public boolean existe(Long id);
+	
+	public List<Producto>mostrarPorCategoria(Long id_Categoria);
+
+	public boolean existeCategoria(Long id);
 
 }
