@@ -3,32 +3,37 @@ package Grupo1.G1P3LH.util;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class DTOresponse<T> {
-
+public class DTOApiResponse<T> {
+	
 	private int status;
 	private List<String> message;
 	private T data;
-
-	public DTOresponse(int status, List<String> message, T data) {
+	
+	public DTOApiResponse(int status, List<String> message, T data) {
 		super();
 		this.status = status;
 		this.message = message;
 		this.data = data;
 	}
 	
-	public DTOresponse(int status, String message, T data) {
+	public DTOApiResponse(int status, String message, T data) {
 		super();
 		this.status = status;
-		List<String> messages = new ArrayList<String>();
+		List<String> messages = new ArrayList<>();
 		messages.add(message);
 		this.message = messages;
 		this.data = data;
 	}
 	
-	public DTOresponse() {
-		
-	}
+	public DTOApiResponse(int status, String message) {
+		super();
+		this.status = status;
+		List<String> messages = new ArrayList<>();
+		messages.add(message);
+		this.message = messages;
+	}	
+	
+	public DTOApiResponse() { }
 
 	public int getStatus() {
 		return status;
@@ -53,5 +58,4 @@ public class DTOresponse<T> {
 	public void setData(T data) {
 		this.data = data;
 	}
-	
-	}
+}

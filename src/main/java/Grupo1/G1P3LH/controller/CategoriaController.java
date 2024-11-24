@@ -12,90 +12,90 @@ import org.springframework.web.bind.annotation.*;
 
 import Grupo1.G1P3LH.entity.Categoria;
 import Grupo1.G1P3LH.service.ICategoriaService;
-import Grupo1.G1P3LH.util.DTOResponse;
+import Grupo1.G1P3LH.util.DTOApiResponse;
 
 @RestController
 public class CategoriaController {
 
-	@Autowired
-	ICategoriaService servi;
+    @Autowired
+    ICategoriaService servi;
 
-	@GetMapping("/categorias")
-	public ResponseEntity<DTOResponse<List<Categoria>>> mostrarTodasLasCategorias() {
-		List<Categoria> listCategoria = servi.mostrarTodos();
+    @GetMapping("/categorias")
+    public ResponseEntity<DTOApiResponse<List<Categoria>>> mostrarTodasLasCategorias() {
+        List<Categoria> listCategoria = servi.mostrarTodos();
 
-		if (listCategoria.isEmpty()) {
-			DTOResponse<List<Categoria>> responseDto = new DTOResponse<>(404, "No hay categorías que mostrar", null);
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
-		} else {
-			DTOResponse<List<Categoria>> responseDto = new DTOResponse<>(200, "", listCategoria);
-			return ResponseEntity.ok().body(responseDto);
-		}
-	}
+        if (listCategoria.isEmpty()) {
+            DTOApiResponse<List<Categoria>> responseDto = new DTOApiResponse<>(404, "No hay categorías que mostrar", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
+        } else {
+            DTOApiResponse<List<Categoria>> responseDto = new DTOApiResponse<>(200, "", listCategoria);
+            return ResponseEntity.ok().body(responseDto);
+        }
+    }
 
-	@GetMapping("/categorias/{id}")
-	public ResponseEntity<DTOResponse<Categoria>> mostrarCategoriaPorId(@PathVariable("id") Long id) {
-		Categoria categoria = servi.mostrarPorId(id);
-		if (categoria != null) {
-			DTOResponse<Categoria> responseDto = new DTOResponse<>(200, "", categoria);
-			return ResponseEntity.ok().body(responseDto);
-		} else {
-			DTOResponse<Categoria> responseDto = new DTOResponse<>(404, "El id " + id + " no existe", null);
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
-		}
-	}
-	//endpoint sugerido
-	@GetMapping("/categorias/activas/count")
-	public ResponseEntity<DTOResponse<Integer>> contarCategoriasActivas() {
-		int cantidadActivas = servi.contarCategoriasActivas();
-		DTOResponse<Integer> responseDto = new DTOResponse<>(200, "Conteo de categorías activas", cantidadActivas);
-		return ResponseEntity.ok().body(responseDto);
-	}
+    @GetMapping("/categorias/{id}")
+    public ResponseEntity<DTOApiResponse<Categoria>> mostrarCategoriaPorId(@PathVariable("id") Long id) {
+        Categoria categoria = servi.mostrarPorId(id);
+        if (categoria != null) {
+            DTOApiResponse<Categoria> responseDto = new DTOApiResponse<>(200, "", categoria);
+            return ResponseEntity.ok().body(responseDto);
+        } else {
+            DTOApiResponse<Categoria> responseDto = new DTOApiResponse<>(404, "El id " + id + " no existe", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
+        }
+    }
 
-	@PostMapping("/categorias")
-	public ResponseEntity<DTOResponse<Categoria>> crearCategoria(@RequestBody Categoria categoria) {
-		if (servi.existe(categoria.getId())) {
-			DTOResponse<Categoria> responseDto = new DTOResponse<>(404, "El id " + categoria.getId().toString() + " ya existe", null);
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
-		} else {
-			Categoria nuevaCategoria = servi.guardar(categoria);
-			DTOResponse<Categoria> responseDto = new DTOResponse<>(201, "", nuevaCategoria);
-			return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
-		}
-	}
+    // Endpoint sugerido
+    @GetMapping("/categorias/activas/count")
+    public ResponseEntity<DTOApiResponse<Integer>> contarCategoriasActivas() {
+        int cantidadActivas = servi.contarCategoriasActivas();
+        DTOApiResponse<Integer> responseDto = new DTOApiResponse<>(200, "Conteo de categorías activas", cantidadActivas);
+        return ResponseEntity.ok().body(responseDto);
+    }
 
-	@PutMapping("/categorias")
-	public ResponseEntity<DTOResponse<Categoria>> modificarCategoria(@RequestBody Categoria categoria) {
-		if (servi.existe(categoria.getId())) {
-			DTOResponse<Categoria> responseDto = new DTOResponse<>(200, "", servi.guardar(categoria));
-			return ResponseEntity.ok().body(responseDto);
-		} else {
-			DTOResponse<Categoria> responseDto = new DTOResponse<>(404, "El id " + categoria.getId().toString() + " no existe", null);
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
-		}
-	}
+    @PostMapping("/categorias")
+    public ResponseEntity<DTOApiResponse<Categoria>> crearCategoria(@RequestBody Categoria categoria) {
+        if (servi.existe(categoria.getId())) {
+            DTOApiResponse<Categoria> responseDto = new DTOApiResponse<>(404, "El id " + categoria.getId().toString() + " ya existe", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
+        } else {
+            Categoria nuevaCategoria = servi.guardar(categoria);
+            DTOApiResponse<Categoria> responseDto = new DTOApiResponse<>(201, "", nuevaCategoria);
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+        }
+    }
 
+    @PutMapping("/categorias")
+    public ResponseEntity<DTOApiResponse<Categoria>> modificarCategoria(@RequestBody Categoria categoria) {
+        if (servi.existe(categoria.getId())) {
+            DTOApiResponse<Categoria> responseDto = new DTOApiResponse<>(200, "", servi.guardar(categoria));
+            return ResponseEntity.ok().body(responseDto);
+        } else {
+            DTOApiResponse<Categoria> responseDto = new DTOApiResponse<>(404, "El id " + categoria.getId().toString() + " no existe", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
+        }
+    }
 
-	@DeleteMapping("/categorias/{id}")
-	public ResponseEntity<DTOResponse<String>> eliminarCategoria(@PathVariable("id") Long id) {
-		if (servi.existe(id)) {
-			servi.eliminar(id);
-			DTOResponse<String> responseDto = new DTOResponse<>(200, "", null);
-			return ResponseEntity.ok().body(responseDto);
-		} else {
-			DTOResponse<String> responseDto = new DTOResponse<>(404, "No existe la categoría con el id " + id, null);
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
-		}
-	}
+    @DeleteMapping("/categorias/{id}")
+    public ResponseEntity<DTOApiResponse<String>> eliminarCategoria(@PathVariable("id") Long id) {
+        if (servi.existe(id)) {
+            servi.eliminar(id);
+            DTOApiResponse<String> responseDto = new DTOApiResponse<>(200, "Eliminada con éxito", null);
+            return ResponseEntity.ok().body(responseDto);
+        } else {
+            DTOApiResponse<String> responseDto = new DTOApiResponse<>(404, "No existe la categoría con el id " + id, null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
+        }
+    }
 
-	// Controlador de excepciones
-	@ExceptionHandler(ConstraintViolationException.class)
-	public ResponseEntity<DTOResponse<List<String>>> exceptionController(ConstraintViolationException e) {
-		List<String> errors = new ArrayList<>();
-		for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
-			errors.add(violation.getMessage());
-		}
-		DTOResponse<List<String>> response = new DTOResponse<>(400, errors, null);
-		return ResponseEntity.badRequest().body(response);
-	}
+    // Controlador de excepciones
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<DTOApiResponse<List<String>>> exceptionController(ConstraintViolationException e) {
+        List<String> errors = new ArrayList<>();
+        for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+            errors.add(violation.getMessage());
+        }
+        DTOApiResponse<List<String>> response = new DTOApiResponse<>(400, errors, null);
+        return ResponseEntity.badRequest().body(response);
+    }
 }
