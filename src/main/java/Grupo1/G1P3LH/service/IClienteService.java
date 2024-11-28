@@ -18,4 +18,6 @@ public interface IClienteService {
 
 	List<Cliente> obtenerClientesVIP();
 
+	Cliente crearCliente(Cliente cliente);
+
 }

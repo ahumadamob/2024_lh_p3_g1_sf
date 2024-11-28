@@ -55,11 +55,31 @@ public class ClienteController {
 	@PostMapping("/clientes")
 	ResponseEntity<DTOApiResponse<Cliente>> crearRegistro(@Valid @RequestBody Cliente cliente) {
 		if (service.existe(cliente.getId_cliente())) {
-			DTOApiResponse<Cliente> dto = new DTOApiResponse<>(HttpStatus.BAD_REQUEST.value(), "Ya existe este cliente: " + cliente.getId_cliente());
+			DTOApiResponse<Cliente> dto = new DTOApiResponse<>(HttpStatus.BAD_REQUEST.value(),
+					"Ya existe este cliente: " + cliente.getId_cliente());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(dto);
 		} else {
-			DTOApiResponse<Cliente> dto = new DTOApiResponse<>(201, "El cliente se creó con éxito", service.guardar(cliente));
+			DTOApiResponse<Cliente> dto = new DTOApiResponse<>(201, "El cliente se creó con éxito",
+					service.guardar(cliente));
 			return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+		}
+	}
+
+	@PostMapping("/api/clientes")
+	public ResponseEntity<DTOApiResponse<Cliente>> crearCliente(@Valid @RequestBody Cliente cliente) {
+		try {
+			Cliente nuevoCliente = service.crearCliente(cliente);
+
+			DTOApiResponse<Cliente> response = new DTOApiResponse<>(HttpStatus.CREATED.value(),
+					"Cliente creado con éxito", nuevoCliente);
+
+			return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+		} catch (IllegalArgumentException e) {
+			DTOApiResponse<Cliente> response = new DTOApiResponse<>(HttpStatus.BAD_REQUEST.value(),
+					"Error: " + e.getMessage());
+
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
 	}
 
@@ -67,7 +87,8 @@ public class ClienteController {
 	ResponseEntity<DTOApiResponse<Cliente>> actualizarCliente(@Valid @RequestBody Cliente cliente) {
 
 		if (service.existe(cliente.getId_cliente())) {
-			DTOApiResponse<Cliente> dto = new DTOApiResponse<>(200, "El cliente se actualizó con éxito", service.guardar(cliente));
+			DTOApiResponse<Cliente> dto = new DTOApiResponse<>(200, "El cliente se actualizó con éxito",
+					service.guardar(cliente));
 			return ResponseEntity.ok().body(dto);
 		} else {
 			throw new ResourceNotFoundException("No existe este cliente: " + cliente.getId_cliente());

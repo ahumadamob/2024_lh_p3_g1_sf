@@ -50,4 +50,18 @@ public class ClienteServiceImpl implements IClienteService {
 		return repo.findByEsVipTrue();
 	}
 
+	public Cliente crearCliente(Cliente cliente) {
+
+		if (repo.findByDni(cliente.getDni()).isPresent()) {
+			throw new IllegalArgumentException("El DNI ya está registrado");
+		} else {
+			if (!cliente.getActivo()) {
+				System.out.println(
+						"Se ha creado un cliente inactivo: " + cliente.getApellido() + ", " + cliente.getNombre());
+			}
+			return repo.save(cliente);
+		}
+
+	}
+
 }
