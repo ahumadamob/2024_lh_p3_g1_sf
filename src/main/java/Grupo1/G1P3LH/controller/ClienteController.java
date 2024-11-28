@@ -68,28 +68,25 @@ public class ClienteController {
 	@PostMapping("/api/clientes")
 
 	public ResponseEntity<DTOApiResponse<Cliente>> crearCliente(@Valid @RequestBody Cliente cliente) {
-	    if (service.findByDni(cliente.getDni())) {
-	        DTOApiResponse<Cliente> response = new DTOApiResponse<>(
-	            HttpStatus.BAD_REQUEST.value(),
-	            "Ya existe un cliente con el DNI: " + cliente.getDni()
-	        );
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-	    }
-	    Cliente nuevoCliente = service.crearCliente(cliente);
 
-	    if (!nuevoCliente.getActivo()) {
-	        System.out.println("Se ha creado un cliente inactivo: " + nuevoCliente.getApellido() + ", " + nuevoCliente.getNombre());
-	    }
+		if (service.findByDni(cliente.getDni())) {
 
-	    DTOApiResponse<Cliente> response = new DTOApiResponse<>(
-	        HttpStatus.CREATED.value(),
-	        "Cliente creado con éxito",
-	        nuevoCliente
-	    );
+			throw new IllegalArgumentException("Ya existe un cliente con el DNI: " + cliente.getDni());
+		}
 
-	    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		Cliente nuevoCliente = service.crearCliente(cliente);
+
+		if (!nuevoCliente.getActivo()) {
+			System.out.println("Se ha creado un cliente inactivo: " + nuevoCliente.getApellido() + ", "
+					+ nuevoCliente.getNombre());
+		}
+
+		DTOApiResponse<Cliente> response = new DTOApiResponse<>(HttpStatus.CREATED.value(), "Cliente creado con éxito",
+				nuevoCliente);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
-	
+
 	@PutMapping("/clientes")
 	ResponseEntity<DTOApiResponse<Cliente>> actualizarCliente(@Valid @RequestBody Cliente cliente) {
 

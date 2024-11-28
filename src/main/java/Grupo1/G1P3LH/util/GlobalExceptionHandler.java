@@ -49,4 +49,14 @@ public class GlobalExceptionHandler {
         DTOApiResponse<String> response = new DTOApiResponse<>(500, "Ocurrió un error interno.", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<DTOApiResponse<String>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        DTOApiResponse<String> response = new DTOApiResponse<>(
+            HttpStatus.BAD_REQUEST.value(),
+            ex.getMessage(),
+            null
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 }
