@@ -11,5 +11,7 @@ public interface IClienteRepository extends JpaRepository<Cliente, Long> {
 	List<Cliente> findByEsVipTrue();
 
 	Optional<Cliente> findByDni(int dni);
+
+	boolean existsByDni(int dni);
 	
 }

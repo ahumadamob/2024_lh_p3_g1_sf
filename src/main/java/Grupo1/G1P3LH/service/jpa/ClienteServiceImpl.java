@@ -64,4 +64,9 @@ public class ClienteServiceImpl implements IClienteService {
 
 	}
 
+	@Override
+	public boolean findByDni(int dni) {
+		return repo.existsByDni(dni);
+	}
+
 }

@@ -20,4 +20,6 @@ public interface IClienteService {
 
 	Cliente crearCliente(Cliente cliente);
 
+	public boolean findByDni(int dni);
+
 }
