@@ -30,6 +30,16 @@ public class Cliente {
 	private Domicilio domicilio;
 	@NotNull(message = "el campo vip no debe ir vacio")
 	private Boolean esVip;
+	@NotNull(message = "el campo activo no debe ir vacio")
+	private Boolean activo;
+
+	public Boolean getActivo() {
+		return activo;
+	}
+
+	public void setActivo(Boolean activo) {
+		this.activo = activo;
+	}
 
 	public Boolean getEsVip() {
 		return esVip;

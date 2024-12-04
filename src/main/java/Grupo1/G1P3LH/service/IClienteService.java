@@ -18,4 +18,8 @@ public interface IClienteService {
 
 	List<Cliente> obtenerClientesVIP();
 
+	Cliente crearCliente(Cliente cliente);
+
+	public boolean findByDni(int dni);
+
 }
