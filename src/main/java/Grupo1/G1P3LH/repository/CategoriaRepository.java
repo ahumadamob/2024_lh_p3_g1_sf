@@ -6,4 +6,5 @@ import Grupo1.G1P3LH.entity.Categoria;
 
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
     int countByEstado(String estado);
+    boolean existsByNombre(String nombre);
 }

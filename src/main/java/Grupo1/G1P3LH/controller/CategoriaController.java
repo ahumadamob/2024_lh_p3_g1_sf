@@ -88,6 +88,40 @@ public class CategoriaController {
         }
     }
 
+    //endpoint Final
+    @PostMapping("/api/categoria")
+    public ResponseEntity<DTOApiResponse<Categoria>> crearCategoriaValida (@RequestBody Categoria categoria) {
+        if (servi.buscarCategoria(categoria.getNombre())) {
+            DTOApiResponse<Categoria> dto = new DTOApiResponse<>(
+                    409,
+                    "Ya existe una categoría con este nombre.",
+                    null
+            );
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(dto);
+        }
+
+        if (categoria.getProductos() == null || categoria.getProductos().isEmpty()) {
+            DTOApiResponse<Categoria> dto = new DTOApiResponse<>(
+                    400,
+                    "La categoría debe tener al menos un producto.",
+                    null
+            );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(dto);
+        }
+
+        if (categoria.getEstado().equals("inactiva")) {
+            System.out.println("Se ha creado una categoría inactiva: " + categoria.getNombre());
+        }
+
+        DTOApiResponse<Categoria> dto = new DTOApiResponse<>(
+                    201,
+                    "Categoría creada",
+                    servi.guardar(categoria));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+
+    }
+
     // Controlador de excepciones
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<DTOApiResponse<List<String>>> exceptionController(ConstraintViolationException e) {
