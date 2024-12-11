@@ -27,7 +27,7 @@ public class Categoria {
 	private String estado;
 
 	@OneToMany(mappedBy = "categoria")
-	@Size(min = 0, message = "La categoría debe tener al menos un producto") // Opcional si decides validar aquí
+	@Size(min = 0, message = "La categoría debe tener al menos un producto")
 	private List<Producto> productos;
 
 	// Getters y setters

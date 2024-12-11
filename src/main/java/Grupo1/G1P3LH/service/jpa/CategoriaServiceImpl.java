@@ -14,29 +14,29 @@ public class CategoriaServiceImpl implements ICategoriaService {
 
 	@Autowired
 	private CategoriaRepository repo;
-	
+
 	@Override
 	public List<Categoria> mostrarTodos() {
-		
+
 		return repo.findAll();
 	}
 
 	@Override
 	public Categoria mostrarPorId(Long id) {
-		
+
 		return repo.findById(id).orElse(null);
 	}
 
 	@Override
 	public Categoria guardar(Categoria producto) {
-		
+
 		return repo.save(producto);
 	}
 
 	@Override
 	public void eliminar(Long id) {
 		repo.deleteById(id);
-		
+
 	}
 
 	@Override
@@ -44,10 +44,10 @@ public class CategoriaServiceImpl implements ICategoriaService {
 		if (id == null) {
 			return false;
 		}else {
-		
+
 			return repo.existsById(id);
 		}
-		
+
 	}
 
 	@Override
@@ -55,6 +55,10 @@ public class CategoriaServiceImpl implements ICategoriaService {
 		return repo.countByEstado("activo");
 	}
 
+	@Override
+	public boolean buscarCategoria(String nombre) {
+		return repo.existsByNombre(nombre);
+	}
 
 
 }

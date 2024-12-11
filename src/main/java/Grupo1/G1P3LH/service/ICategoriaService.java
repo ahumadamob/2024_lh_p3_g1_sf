@@ -11,4 +11,5 @@ public interface ICategoriaService {
 	public void eliminar(Long id);
 	public boolean existe(Long id);
 	public int contarCategoriasActivas();
+	public boolean buscarCategoria(String nombre);
 }
