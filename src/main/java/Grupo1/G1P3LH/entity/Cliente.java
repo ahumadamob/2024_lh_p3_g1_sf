@@ -2,6 +2,8 @@ package Grupo1.G1P3LH.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,20 +20,31 @@ public class Cliente {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id_cliente;
+	
 	@NotNull(message = "El DNI es obligatorio")
 	private int dni;
+
 	@NotBlank(message = "Apellido no puede ir vacio")
 	private String apellido;
+	
 	@NotBlank(message = "Nombre es obligatorio")
 	private String nombre;
+	
 	@Email(message = "se debe ingresar un correo")
 	private String correo;
+	
 	@OneToOne
 	private Domicilio domicilio;
+	
 	@NotNull(message = "el campo vip no debe ir vacio")
 	private Boolean esVip;
+	
 	@NotNull(message = "el campo activo no debe ir vacio")
 	private Boolean activo;
+	
+	@OneToMany(mappedBy = "cliente")
+	@JsonManagedReference
+	private List<Venta> ventas;
 
 	public Boolean getActivo() {
 		return activo;
@@ -48,9 +61,6 @@ public class Cliente {
 	public void setEsVip(Boolean esVip) {
 		this.esVip = esVip;
 	}
-
-	@OneToMany(mappedBy = "cliente")
-	private List<Venta> ventas;
 
 	public List<Venta> getVentas() {
 		return ventas;
