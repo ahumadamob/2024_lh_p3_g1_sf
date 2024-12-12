@@ -1,28 +1,39 @@
 package Grupo1.G1P3LH.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
+@Table(name = "detalle_de_pago", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"venta_id", "metodo_de_pago", "estado_pago"})
+})
 public class DetalleDePago {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
-	@ManyToOne
-	@JoinColumn(name = "venta_id")
-	private Venta venta;
-	@NotBlank (message = "Metodo de pago obligatorio")
-	private String metodoDePago;
-	@NotBlank(message = "Estado de pago obligatorio")
-	private String estadoPago;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "venta_id", nullable = false)
+    @JsonIgnore
+    private Venta venta;
+
+    @Column(name = "metodo_de_pago", nullable = false)
+    private String metodoDePago;
+
+    @Column(name = "estado_pago", nullable = false)
+    private String estadoPago;
 
 	public Long getId() {
 		return id;
@@ -30,6 +41,14 @@ public class DetalleDePago {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Venta getVenta() {
+		return venta;
+	}
+
+	public void setVenta(Venta venta) {
+		this.venta = venta;
 	}
 
 	public String getMetodoDePago() {
@@ -40,10 +59,6 @@ public class DetalleDePago {
 		this.metodoDePago = metodoDePago;
 	}
 
-	public Venta getVenta() {
-		return venta;
-	}
-
 	public String getEstadoPago() {
 		return estadoPago;
 	}
@@ -52,8 +67,7 @@ public class DetalleDePago {
 		this.estadoPago = estadoPago;
 	}
 
-	public void setVenta(Venta venta) {
-		this.venta = venta;
-	}
-
+    
 }
+
+
