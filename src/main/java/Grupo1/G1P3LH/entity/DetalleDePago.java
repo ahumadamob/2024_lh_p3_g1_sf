@@ -1,5 +1,7 @@
 package Grupo1.G1P3LH.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,9 +19,12 @@ public class DetalleDePago {
 	
 	@ManyToOne
 	@JoinColumn(name = "venta_id")
+	@JsonBackReference
 	private Venta venta;
+	
 	@NotBlank (message = "Metodo de pago obligatorio")
 	private String metodoDePago;
+	
 	@NotBlank(message = "Estado de pago obligatorio")
 	private String estadoPago;
 

@@ -2,6 +2,9 @@ package Grupo1.G1P3LH.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,14 +19,19 @@ public class Venta {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id_venta;
+	
 	private String carrito_id;
 
 	@ManyToMany
 	private List<Producto> productos;
+	
 	@ManyToOne
 	@JoinColumn(name = "cliente_id")
+	@JsonBackReference
 	private Cliente cliente;
+	
 	@OneToMany(mappedBy = "venta")
+	@JsonManagedReference
 	private List<DetalleDePago> detalleDePagos;
 
 	public Cliente getCliente() {
