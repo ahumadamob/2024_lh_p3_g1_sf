@@ -20,6 +20,7 @@ import Grupo1.G1P3LH.service.IProductoService;
 import Grupo1.G1P3LH.util.DTOApiResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
 
 @RestController
 public class ProductoController {
@@ -94,7 +95,40 @@ public class ProductoController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
         }
     }
+    
+    @PostMapping("/productos/api")
+    public ResponseEntity<DTOApiResponse<?>> crearProductoValidado(@Valid @RequestBody Producto producto) {
+        
+    	//valida si el id del producto ya existe
+    	if (service.existe(producto.getId())) {
+            DTOApiResponse<?> dto = new DTOApiResponse<>(404, "El producto con el ID: " + producto.getId().toString() + " ya está creado", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
+            
+            //valida si la categoria existe
+        } else if (!service.existeCategoria(producto.getCategoria().getId())) {
+            DTOApiResponse<?> dto = new DTOApiResponse<>(404, "La categoria con el id: "+producto.getCategoria().getId()+"no existe", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
+            
+            //valida si se cumple la condicion de relacion stock precio
+        }else if (producto.getStock() > 100 && producto.getPrecio() < 500) {
+        	DTOApiResponse<?> dto = new DTOApiResponse<>(404,"Si el stock es mayor a 100, el precio debe ser al menos 500", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
+			
+            //valida que el stock se 1 como minimo 
+		} else if (producto.getStock() < 1) {
+			DTOApiResponse<?> dto = new DTOApiResponse<>(404,"El stock debe ser al menos 1", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
+		
+            //crea el producto
+		}else {
+			DTOApiResponse<?> dto = new DTOApiResponse<>(200, "Producto creado", service.guardar(producto));
+            return ResponseEntity.ok().body(dto);
+		}
+			
+    }
 
+    
+    
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<DTOApiResponse<?>> controladorDeExcepciones(ConstraintViolationException e) {
         List<String> errors = new ArrayList<>();

@@ -1,6 +1,8 @@
 package Grupo1.G1P3LH.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +15,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Producto {
 	
 @Id
@@ -28,7 +31,7 @@ private Long stock;
 
 @ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name = "categoria_id")
-@JsonIgnore
+@JsonManagedReference
 private Categoria categoria;
 
 public String getNombreProducto() {
